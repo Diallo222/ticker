@@ -3,9 +3,10 @@ import type { TapeItem } from '../lib/marketEngine'
 
 interface TapeProps {
   items: TapeItem[]
+  active: boolean
 }
 
-export function Tape({ items }: TapeProps) {
+export function Tape({ items, active }: TapeProps) {
   const doubled = [...items, ...items]
 
   return (
@@ -18,7 +19,11 @@ export function Tape({ items }: TapeProps) {
           Tape
         </span>
         <div className="relative min-w-0 flex-1 overflow-hidden">
-          <div className="tape-track flex w-max gap-6 group-hover:[animation-play-state:paused]">
+          <div
+            className={`tape-track flex w-max gap-6 group-hover:[animation-play-state:paused] ${
+              active ? '' : 'tape-track--paused'
+            }`}
+          >
             {doubled.map((item, i) => {
               const up = item.changePct >= 0
               return (

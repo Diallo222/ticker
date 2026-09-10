@@ -1,11 +1,25 @@
-import { motion } from 'framer-motion'
+import type { FeedStatus } from '../hooks/useMarket'
 import { formatClock } from '../lib/format'
+import { motion } from 'framer-motion'
 
 interface MastheadProps {
   now: Date
+  status: FeedStatus
 }
 
-export function Masthead({ now }: MastheadProps) {
+const STATUS_LABEL: Record<FeedStatus, string> = {
+  connecting: 'CONNECTING',
+  live: 'LIVE',
+  offline: 'OFFLINE',
+  reconnecting: 'RECONNECTING',
+  error: 'ERROR',
+}
+
+export function Masthead({ now, status }: MastheadProps) {
+  const isLive = status === 'live'
+  const isAlert = status === 'offline' || status === 'error'
+  const isPending = status === 'connecting' || status === 'reconnecting'
+
   return (
     <motion.header
       className="flex items-end justify-between gap-6 border-b-2 border-ink px-5 pb-3 pt-5 md:px-8 md:pt-7"
@@ -22,9 +36,17 @@ export function Masthead({ now }: MastheadProps) {
         </p>
       </div>
       <div className="pb-1 text-right font-mono text-[11px] leading-relaxed md:text-xs">
-        <div className="flex items-center justify-end gap-2 text-live">
-          <span className="live-dot" aria-hidden />
-          <span className="font-medium tracking-wide">LIVE</span>
+        <div
+          className={`flex items-center justify-end gap-2 ${
+            isLive ? 'text-live' : isAlert ? 'text-down' : 'text-ink-muted'
+          }`}
+          aria-live="polite"
+        >
+          <span
+            className={`live-dot ${isPending ? 'live-dot--pending' : ''} ${isAlert ? 'live-dot--alert' : ''} ${!isLive && !isPending ? 'live-dot--static' : ''}`}
+            aria-hidden
+          />
+          <span className="font-medium tracking-wide">{STATUS_LABEL[status]}</span>
         </div>
         <div className="mt-1 text-ink-muted tabular-nums">
           {formatClock(now)} <span className="text-[10px]">ET</span>
