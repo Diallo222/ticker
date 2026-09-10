@@ -10,6 +10,8 @@ Ticker is a single-composition markets terminal for US equities and major indice
 
 ## Preview
 
+**Live:** [https://ticker-chi-one.vercel.app](https://ticker-chi-one.vercel.app)
+
 ```bash
 npm install
 npm run dev
